@@ -1,5 +1,6 @@
-import { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
+//일기 만들때 onCreate
 const DiaryEditor = ({ onCreate }) => {
   const authorInput = useRef();
   const contentInput = useRef();
@@ -77,4 +78,5 @@ const DiaryEditor = ({ onCreate }) => {
   );
 };
 
-export default DiaryEditor;
+//React.memo로 묶인 다이어리 에디터를 보내는 것
+export default React.memo(DiaryEditor);

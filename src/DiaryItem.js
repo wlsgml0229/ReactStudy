@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const DiaryItem = ({
   onEdit,
@@ -9,6 +9,9 @@ const DiaryItem = ({
   emotion,
   id,
 }) => {
+  useEffect(() => {
+    console.log(`${id} 번째 아이템 렌더`);
+  });
   //boolean 로 수정 상태 표현
   const [isEdit, setIsEdit] = useState(false);
   //원래 Edit 값을 반전 (토글)
@@ -76,4 +79,4 @@ const DiaryItem = ({
     </div>
   );
 };
-export default DiaryItem;
+export default React.memo(DiaryItem);

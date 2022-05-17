@@ -1,8 +1,7 @@
-import { useMemo, useEffect, useRef, useState } from "react";
+import { useMemo, useEffect, useRef, useState, useCallback } from "react";
 import "./App.css";
 import DiaryEditor from "./DiaryEditor";
 import DiaryList from "./DiaryList";
-import OptimizeTest from "./OptimizeTest";
 
 function App() {
   // 일기 데이터 배열 저장 위해서 빈배열 설정
@@ -33,7 +32,11 @@ function App() {
     getData();
   }, []);
 
-  const onCreate = (author, content, emotion) => {
+  //첫번째인자로 전달하는 콜백함수 --> 다이어리에디터가 저장눌렀을때 전달
+  // 두번째 인자 -> 뎁스 빈배열로 마운트시점에 한번만 만들고 두번째는 재사용 할 수
+  //빈배열로 둔다면 새로 게시글 작성했을때 기존의 datastate가 날라감
+
+  const onCreate = useCallback((author, content, emotion) => {
     const created_date = new Date().getTime();
     const newItem = {
       author,
@@ -44,24 +47,24 @@ function App() {
     };
     //다음 아이템 Id 값 추가
     dataId.current += 1;
-    setData([newItem, ...data]);
-  };
+    // 함수형 업데이트
+    setData((data) => [newItem, ...data]);
+  }, []);
 
-  const onRemove = (targetId) => {
-    const newDiaryList = data.filter((it) => it.id !== targetId);
-    setData(newDiaryList);
-  };
+  const onRemove = useCallback((targetId) => {
+    setData((data) => data.filter((it) => it.id !== targetId));
+  }, []);
 
   // 아이디 일치하지 않으면 수정대상이 아니기 떄문에 it 반환 ;
   // 일치하면 컨텐트를 새로운 컨텐트값으로 변경
   // 데이터를 수정하는 함수
-  const onEdit = (targetId, newContent) => {
-    setData(
+  const onEdit = useCallback((targetId, newContent) => {
+    setData((data) =>
       data.map((it) =>
         it.id === targetId ? { ...it, content: newContent } : it
       )
     );
-  };
+  }, []);
 
   const getDiaryAnalysis = useMemo(() => {
     const goodCount = data.filter((it) => it.emotion >= 3).length;
@@ -74,7 +77,6 @@ function App() {
 
   return (
     <div className="App">
-      <OptimizeTest></OptimizeTest>
       <DiaryEditor onCreate={onCreate} />
       <div>전체 일기: {data.length}</div>
       <div>기분 좋은 일기 개수: {goodCount}</div>
