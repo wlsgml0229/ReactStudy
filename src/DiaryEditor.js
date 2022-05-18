@@ -1,7 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { DiaryDispatchContext } from "./App";
 
 //일기 만들때 onCreate
-const DiaryEditor = ({ onCreate }) => {
+const DiaryEditor = () => {
+  //비구조화 할당으로 받아와야함
+  const { onCreate } = useContext(DiaryDispatchContext);
   const authorInput = useRef();
   const contentInput = useRef();
 
